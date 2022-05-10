@@ -2,29 +2,34 @@ import React, {useState, useEffect, useContext, use} from "react";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useParams, useLocation} from "react-router-dom";
+import AuthContext from "../context/AuthProvider";
 const Products = ()=>{
+    const {auth}  = useState(AuthContext)
     let queryParams = useParams();
     const [data, setData] = useState([])
     const [filter, setFilter] = useState(data)
     const [loading, setLoading] = useState(false)
     let componentMounted = true;
     useEffect(()=>{
-        const getProduct = async ()=>{
-            setLoading(true)
-            const response = await fetch('https://davidani.com/api/api/category-products/'+queryParams.category)
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        setFilter(result.data)
-                        setData(result.data)
-                        setLoading(false)
-                    })
-            return ()=>{
-                componentMounted = false
-            }
-        }
+        getProduct()
+    }, [queryParams])
+    useEffect(()=>{
         getProduct()
     }, [])
+    const getProduct = async ()=>{
+        setLoading(true)
+        const response = await fetch('https://davidani.com/api/api/category-products/'+queryParams.category)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setFilter(result.data)
+                    setData(result.data)
+                    setLoading(false)
+                })
+        return ()=>{
+            componentMounted = false
+        }
+    }
     const Loading = ()=>{
         return (
             <>
