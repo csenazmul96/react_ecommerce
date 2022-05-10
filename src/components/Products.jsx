@@ -1,12 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext, use} from "react";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useParams, useHistory} from "react-router-dom";
+import { useParams, useLocation} from "react-router-dom";
 const Products = ()=>{
-    const history = useHistory()
-    history.listen((location, action) => {
-        console.log('sdf')
-    })
     let queryParams = useParams();
     const [data, setData] = useState([])
     const [filter, setFilter] = useState(data)

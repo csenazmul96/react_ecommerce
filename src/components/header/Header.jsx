@@ -97,6 +97,9 @@ const Header = () =>{
                                 <ul>
 
                                     <li>
+                                        <Link to="/login">About</Link>
+                                    </li>
+                                    <li>
                                         <a href="#"><i className="lni lni-heart"></i> MY FAVORITES <span>12</span> </a>
                                     </li>
                                     <li className="profile_ic"><a href="#">
