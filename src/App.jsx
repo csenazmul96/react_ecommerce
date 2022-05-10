@@ -13,6 +13,7 @@ function App() {
                 <Route path="/" index element={<Home />} />
                 <Route name="login" path="login" element={<Login />} />
                 <Route path="products/:category" element={<Products />} />
+                <Route path="products/:category/:subcategory" element={<Products />} />
             </Routes>
             <Footer />
         </div>

@@ -1,8 +1,52 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import logo from '../../images/logo.png'
 import classes from './Header.module.css'
 import { Link } from "react-router-dom";
+import axios from '../../api/axios';
+
 const Header = () =>{
+    const [categories, setData] = useState([])
+    useEffect(()=>{
+        getCategory()
+    }, [])
+
+    const getCategory = ()=>{
+        axios.get('/categories').then((response)=>{
+            if(response?.data?.data){
+                setData(response.data.data)
+                Category()
+            }
+        })
+    }
+
+    const Category = () =>{
+        return (
+            categories.map((product)=>{
+                return(
+                    <li key={'key_'+product.id.toString()}>
+                        <Link to={`products/${product.slug}`}>{product.name}</Link>
+                        { product.sub_categories.length ? (
+                            <div className="megamenu">
+                                <ul>
+                                    <SubCategory subcat={product.sub_categories} parent={product.slug} />
+                                </ul>
+                            </div>
+                        ) : null }
+                    </li>
+                )
+            })
+        )
+    }
+    const SubCategory = ({subcat, parent}) =>{
+        return (
+            subcat.map((product)=>{
+                return(
+                    <li key={'key_sub_'+product.id.toString()}><Link to={`products/${parent}/${product.slug}`}>{product.name}</Link></li>
+                )
+            })
+
+        )
+    }
     return  (
         <header className="header_area fixed-top">
             <div className="header_top">
@@ -45,53 +89,7 @@ const Header = () =>{
                                 </Link>
                             </div>
                             <ul className="header_menu">
-                                <li><a href="#">SHOP NEW</a>
-                                    <div className="megamenu">
-                                        <ul>
-                                            <li className="has_child">
-                                                <a href="#">Ethics & Sustainability</a>
-                                                <ul className="third_layer">
-                                                    <li><a href="#">RESORT '21</a></li>
-                                                    <li><a href="#">SPRING/SUMMER '20</a></li>
-                                                    <li><a href="#">SPRING/SUMMER '19</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">Our Story</a></li>
-                                            <li><a href="#">Our Fabrics</a></li>
-                                            <li><a href="#">Our Makers</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><Link to={'products/regular'}>Reguler</Link>
-                                    <div className="megamenu">
-                                        <ul>
-                                            <li><a href="#">Ethics & Sustainability</a></li>
-                                            <li><a href="#">Our Story</a></li>
-                                            <li><a href="#">Our Fabrics</a></li>
-                                            <li><a href="#">Our Makers</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><Link to={'products/bestofbest'}>Best of Best</Link>
-                                    <div className="megamenu">
-                                        <ul>
-                                            <li><a href="#">BASICS MADE BETTER</a></li>
-                                            <li><a href="#">RESORT '21</a></li>
-                                            <li><a href="#">SPRING/SUMMER '20</a></li>
-                                            <li><a href="#">SPRING/SUMMER '19</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><Link to={`products/pre-order`}>PRE-ORDER</Link>
-                                    <div className="megamenu">
-                                        <ul>
-                                            <li><a href="#">BASICS MADE BETTER</a></li>
-                                            <li><a href="#">RESORT '21</a></li>
-                                            <li><a href="#">SPRING/SUMMER '20</a></li>
-                                            <li><a href="#">SPRING/SUMMER '19</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
+                                <Category />
                             </ul>
                             <div className="header_cart">
                                 <ul>

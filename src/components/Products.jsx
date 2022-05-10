@@ -3,25 +3,30 @@ import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useParams, useLocation} from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
+import Pagination from "./Pagination";
 const Products = ()=>{
     const {auth}  = useState(AuthContext)
     let queryParams = useParams();
     const [data, setData] = useState([])
+    const [pagination, setPagination] = useState([])
     const [filter, setFilter] = useState(data)
     const [loading, setLoading] = useState(false)
     let componentMounted = true;
+
     useEffect(()=>{
         getProduct()
     }, [queryParams])
-    useEffect(()=>{
-        getProduct()
-    }, [])
+
     const getProduct = async ()=>{
+        let params = queryParams.category;
+        if(queryParams?.subcategory)
+            params = params+'/'+queryParams.subcategory
         setLoading(true)
-        const response = await fetch('https://davidani.com/api/api/category-products/'+queryParams.category)
+        const response = await fetch(`${process.env.REACT_APP_API_KEY}/category-products/`+params)
             .then(res => res.json())
             .then(
                 (result) => {
+                    setPagination(result.meta)
                     setFilter(result.data)
                     setData(result.data)
                     setLoading(false)
@@ -29,6 +34,9 @@ const Products = ()=>{
         return ()=>{
             componentMounted = false
         }
+    }
+    const handleCallback = (link) =>{
+        console.log(link)
     }
     const Loading = ()=>{
         return (
@@ -91,8 +99,7 @@ const Products = ()=>{
         )
     }
     return(
-        <>
-            <section className="product_area">
+        <section className="product_area">
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-12 col-md-6">
@@ -277,41 +284,15 @@ const Products = ()=>{
                         </div>
                     </div>
                 </div>
-
                 <div className="main_product_area">
                     <div className="container-fluid">
                         <div className="row product_custom_margin">
                             {loading ? <Loading /> : <ShowProduct />}
                         </div>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <div className="pagination_global">
-                                    <div className="product_pagination">
-                                        <nav aria-label="Page navigation example">
-                                            <ul className="pagination d_flex_center">
-                                                <li className="page-item">
-                                                    <a className="page-link" href="#" tabIndex="-1"><i
-                                                        className="lni lni-chevron-left"></i></a>
-                                                </li>
-                                                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">...</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">15</a></li>
-                                                <li className="page-item">
-                                                    <a className="page-link" href="#"><i
-                                                        className="lni lni-chevron-right"></i></a>
-                                                </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <Pagination pagination={pagination} parentCallback = {handleCallback} />
                     </div>
                 </div>
             </section>
-        </>
     )
 }
 
