@@ -1,34 +1,40 @@
 import React, {useState, useEffect, useContext, use} from "react";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useParams, useLocation} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
 import Pagination from "./Pagination";
+import axios from '../api/axios';
 const Products = ()=>{
     const {auth}  = useState(AuthContext)
-    let queryParams = useParams();
+    let {category, subcategory} = useParams();
+    let history = useNavigate()
+    let url = category;
+    if(subcategory)
+        url = url+'/'+subcategory
     const [data, setData] = useState([])
     const [pagination, setPagination] = useState([])
     const [filter, setFilter] = useState(data)
     const [loading, setLoading] = useState(false)
+    const query = {
+        page: 1,
+        sort: 1
+    }
+
     let componentMounted = true;
 
     useEffect(()=>{
         getProduct()
-    }, [queryParams])
+    }, [category, subcategory])
 
     const getProduct = async ()=>{
-        let params = queryParams.category;
-        if(queryParams?.subcategory)
-            params = params+'/'+queryParams.subcategory
         setLoading(true)
-        const response = await fetch(`${process.env.REACT_APP_API_KEY}/category-products/`+params)
-            .then(res => res.json())
+        await axios.get(`/category-products/`+url, {params: query})
             .then(
                 (result) => {
-                    setPagination(result.meta)
-                    setFilter(result.data)
-                    setData(result.data)
+                    setPagination(result.data.meta)
+                    setFilter(result.data.data)
+                    setData(result.data.data)
                     setLoading(false)
                 })
         return ()=>{
@@ -36,7 +42,9 @@ const Products = ()=>{
         }
     }
     const handleCallback = (link) =>{
-        console.log(link)
+        history(url)
+        query.page = link.label
+        getProduct()
     }
     const Loading = ()=>{
         return (
@@ -66,37 +74,42 @@ const Products = ()=>{
         )
     }
     const ShowProduct = ()=>{
-        return (
-            filter.map((product)=>{
-                return(
-                    <div  className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding" key={'key_'+product.id.toString()}>
-                        <div className="product_wrapper" >
-                            <a href="#">
-                                <div className="main_product_img">
-                                    <img src={product.images[0].compressed_image} className="img-fluid" alt="" />
-                                </div>
-                            </a>
-                            <div className="main_product_text">
-                                <h2><a href="#">{product.name.substring(0,100)}</a></h2>
-                                {product.orig_price_formatted? (<p>${product.price_formatted}</p>) : (<p> <span className="update_price">${product.price_formatted}</span> <span className="line_through">${product.orig_price_formatted}</span> </p>) }
+        if(filter && filter.length) {
+            return (
+                filter.map((product) => {
+                    return (
+                        <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding"
+                             key={'key_' + product.id.toString()}>
+                            <div className="product_wrapper">
+                                <a href="#">
+                                    <div className="main_product_img">
+                                        <img src={product.images[0].compressed_image} className="img-fluid" alt=""/>
+                                    </div>
+                                </a>
+                                <div className="main_product_text">
+                                    <h2><a href="#">{product.name.substring(0, 100)}</a></h2>
+                                    {product.orig_price_formatted ? (<p>${product.price_formatted}</p>) : (
+                                        <p><span className="update_price">${product.price_formatted}</span> <span
+                                            className="line_through">${product.orig_price_formatted}</span></p>)}
 
+                                </div>
+                                <ul className="color_variation">
+                                    <li className="active"><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                    <li><span></span></li>
+                                </ul>
                             </div>
-                            <ul className="color_variation">
-                                <li className="active"><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                                <li><span></span></li>
-                            </ul>
                         </div>
-                    </div>
-                )
+                    )
                 })
 
         )
+        }
     }
     return(
         <section className="product_area">
