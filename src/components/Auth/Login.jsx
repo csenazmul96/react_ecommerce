@@ -1,11 +1,14 @@
 import { useRef, useState, useEffect, useContext } from 'react';
+import {connect} from "react-redux";
+import {loginAction} from "../../Services/Actions/AuthAction";
 import {Link} from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 import axios from '../../api/axios';
 const LOGIN_URL = '/login';
 
 
-const Login = ()=>{
+
+const Login = ({loginAction, user})=>{
     const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
@@ -25,20 +28,22 @@ const Login = ()=>{
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post(LOGIN_URL,
+
+            await axios.post(LOGIN_URL,
                 JSON.stringify({ email, password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
-            );
-            axios.defaults.headers.common['Authorization'] = `Bearer ${response?.data?.data.token}`;
-            setAuth(response?.data?.data);
-            setUser('');
-            setPwd('');
-            setSuccess(true);
+            ).then((response)=>{
+                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.token}`;
+                loginAction(response?.data?.data)
+                setUser('');
+                setPwd('');
+                setSuccess(true);
+            });
+
 
         } catch (err) {
             if (!err?.response) {
@@ -53,11 +58,13 @@ const Login = ()=>{
             errRef.current.focus();
         }
     }
+
     return (
         <div className="login_area ">
             <div className="logo">
                 <Link to="/"><img src="../../images/logo.png" alt="" /></Link>
             </div>
+            <h1>{user ? user.name : null} </h1>
             <div className="login_content">
                 <div className="login_banner">
                     <img src="../../images/login_bg.png" alt="" className="img-fluid" />
@@ -103,4 +110,7 @@ const Login = ()=>{
         </div>
     )
 }
-export default Login
+const mapStateToProps = (state) =>({
+    user: state.AuthReducer.user
+})
+export default connect(mapStateToProps, {loginAction}) (Login)

@@ -1,5 +1,8 @@
 import React from "react";
+import {useSelector, useDispatch} from "react-redux";
+
 const Home = ()=>{
+    const user = useSelector(state => state.AuthReducer.user)
     return(
         <>
             <div className="full_screen_overlay"></div>
@@ -7,6 +10,7 @@ const Home = ()=>{
                 <div className="banner_slider">
                     <div className="banner_slider_inner">
                         <a href="#"><img src="../images/banner3.jpg" alt="" className="img-fluid" /></a>
+                        <p>{user ? user.name : null}</p>
                     </div>
                 </div>
             </section>

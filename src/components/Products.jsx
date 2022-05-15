@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useContext, use} from "react";
+import {connect} from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import {useParams, useNavigate} from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
 import Pagination from "./Pagination";
 import axios from '../api/axios';
-const Products = ()=>{
+import {loginAction} from "../Services/Actions/AuthAction";
+const Products = ({user})=>{
     const {auth}  = useState(AuthContext)
     let {category, subcategory} = useParams();
     let history = useNavigate()
@@ -113,6 +115,7 @@ const Products = ()=>{
     }
     return(
         <section className="product_area">
+
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-12 col-md-6">
@@ -124,6 +127,7 @@ const Products = ()=>{
                                 </ol>
                             </nav>
                         </div>
+
                         <div className="col-12 col-md-6 d_none">
                             <div className="product_wrap_title pwr_mobile ">
                                 <h2><span>NEW ARRIVALS</span> <span className="d_none"><i
@@ -299,7 +303,9 @@ const Products = ()=>{
                 </div>
                 <div className="main_product_area">
                     <div className="container-fluid">
+
                         <div className="row product_custom_margin">
+                            <h1>{user ? user.name : null} </h1>
                             {loading ? <Loading /> : <ShowProduct />}
                         </div>
                         <Pagination pagination={pagination} parentCallback = {handleCallback} />
@@ -309,4 +315,8 @@ const Products = ()=>{
     )
 }
 
-export default Products
+
+const mapStateToProps = (state) =>({
+    user: state.AuthReducer.user
+})
+export default connect(mapStateToProps) (Products)
