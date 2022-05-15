@@ -48,7 +48,7 @@ const Header = () =>{
         )
     }
     return  (
-        <header className="header_area fixed-top">
+        <header className="header_area fixed-top" id="header_area">
             <div className="header_top">
                 <div className="header_top_dropdown">
                     <ul>

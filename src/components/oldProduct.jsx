@@ -1,31 +1,48 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect, } from "react";
 import {connect} from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
+import AuthContext from "../context/AuthProvider";
 import Pagination from "./Pagination";
-
-import {sendProductsRequest} from "../Services/Actions/ProductActions";
-const Products = ({user, sendProductsRequest, products, loader, error, pagination})=>{
+import axios from '../api/axios';
+const Products = ({user})=>{
     let {category, subcategory} = useParams();
+    let history = useNavigate()
     let url = category;
     if(subcategory)
         url = url+'/'+subcategory
-
+    const [data, setData] = useState([])
+    const [pagination, setPagination] = useState([])
+    const [filter, setFilter] = useState(data)
+    const [loading, setLoading] = useState(false)
     const query = {
         page: 1,
         sort: 1
     }
 
+    let componentMounted = true;
+
     useEffect(()=>{
         getProduct()
     }, [category, subcategory])
 
-    function getProduct(){
-        sendProductsRequest({url:url, params:query})
+    const getProduct = async ()=>{
+        setLoading(true)
+        await axios.get(`/category-products/`+url, {params: query})
+            .then(
+                (result) => {
+                    setPagination(result.data.meta)
+                    setFilter(result.data.data)
+                    setData(result.data.data)
+                    setLoading(false)
+                })
+        return ()=>{
+            componentMounted = false
+        }
     }
-
     const handleCallback = (link) =>{
+        history(url)
         query.page = link.label
         getProduct()
     }
@@ -57,9 +74,9 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
         )
     }
     const ShowProduct = ()=>{
-        if(products && products.length) {
+        if(filter && filter.length) {
             return (
-                products.map((product) => {
+                filter.map((product) => {
                     return (
                         <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding"
                              key={'key_' + product.id.toString()}>
@@ -96,6 +113,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
     }
     return(
         <section className="product_area">
+
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-12 col-md-6">
@@ -110,7 +128,8 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
 
                     <div className="col-12 col-md-6 d_none">
                         <div className="product_wrap_title pwr_mobile ">
-                            <h2><span>NEW ARRIVALS</span> <span className="d_none"><i className="lni lni-chevron-down"></i></span></h2>
+                            <h2><span>NEW ARRIVALS</span> <span className="d_none"><i
+                                className="lni lni-chevron-down"></i></span></h2>
                         </div>
                     </div>
                     <div className="col-12 col-md-6">
@@ -124,7 +143,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="inner">
                                                     <ul id="left_cat" className="left_cat">
                                                         <li>
-                                                            <a role="button">View All</a>
+                                                            <a role="button" onClick={()=>setFilter(data)}>View All</a>
                                                         </li>
                                                         <li>
                                                             <a href="#">Booties</a>
@@ -282,9 +301,10 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
             </div>
             <div className="main_product_area">
                 <div className="container-fluid">
+
                     <div className="row product_custom_margin">
                         <h1>{user ? user.name : null} </h1>
-                        {loader ? <Loading /> : error ? <p>Something Wrong</p> : <ShowProduct />}
+                        {loading ? <Loading /> : <ShowProduct />}
                     </div>
                     <Pagination pagination={pagination} parentCallback = {handleCallback} />
                 </div>
@@ -295,10 +315,6 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
 
 
 const mapStateToProps = (state) =>({
-    user: state.AuthReducer.user,
-    products: state.ProductReducers.products,
-    error: state.ProductReducers.error,
-    loader: state.ProductReducers.loader,
-    pagination: state.ProductReducers.pagination
+    user: state.AuthReducer.user
 })
-export default connect(mapStateToProps, {sendProductsRequest}) (Products)
+export default connect(mapStateToProps) (Products)
