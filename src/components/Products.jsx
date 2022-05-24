@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Pagination from "./Pagination";
 
 import {sendProductsRequest} from "../Services/Actions/ProductActions";
@@ -64,11 +64,11 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                         <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding"
                              key={'key_' + product.id.toString()}>
                             <div className="product_wrapper">
-                                <a href="#">
+                                <Link to={`/product/${product.slug}`}>
                                     <div className="main_product_img">
                                         <img src={product.images[0].compressed_image} className="img-fluid" alt=""/>
                                     </div>
-                                </a>
+                                </Link>
                                 <div className="main_product_text">
                                     <h2><a href="#">{product.name.substring(0, 100)}</a></h2>
                                     {product.orig_price_formatted ? (<p>${product.price_formatted}</p>) : (
@@ -283,7 +283,6 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
             <div className="main_product_area">
                 <div className="container-fluid">
                     <div className="row product_custom_margin">
-                        <h1>{user ? user.name : null} </h1>
                         {loader ? <Loading /> : error ? <p>Something Wrong</p> : <ShowProduct />}
                     </div>
                     <Pagination pagination={pagination} parentCallback = {handleCallback} />

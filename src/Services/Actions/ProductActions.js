@@ -1,5 +1,5 @@
 import {SendProductGetRequest, GetProductRequestSuccess, GetProductRequestFail} from "../Type";
-import axios from "axios";
+import axios from '../../api/axios';
 
 export const sendProductsRequest = (payload) =>{
     return async (dispatch)=> {
@@ -7,7 +7,7 @@ export const sendProductsRequest = (payload) =>{
             dispatch({
                 type:SendProductGetRequest,
             })
-             const res = await axios.get('https://davidani.com/api/api/category-products/'+payload.url, {params: payload.params})
+             const res = await axios.get('/category-products/'+payload.url, {params: payload.params})
              dispatch({
                  type:GetProductRequestSuccess,
                  payload: res.data.data,

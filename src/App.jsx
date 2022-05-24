@@ -1,6 +1,7 @@
 import Header from "./components/header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./components/Home";
+import ProductDetails from "./components/ProductDetails";
 import Products from "./components/Products";
 import {Routes, Route, useLocation} from "react-router-dom";
 import Login from "./components/Auth/Login";
@@ -12,7 +13,7 @@ function App() {
     }, []);
 
     const getHeaderHeight= () =>{
-        let headerHeight = document.getElementById('header_area').clientHeight
+        let headerHeight = document.getElementById('header_area') ? document.getElementById('header_area').clientHeight: null
         if(headerHeight)
             document.getElementById('margin_top').style.marginTop = ""+headerHeight+"px"
     }
@@ -24,8 +25,9 @@ function App() {
             <Routes>
                 <Route path="/" index element={<Home />} />
                 <Route name="login" path="login" element={<Login />} />
-                <Route path="products/:category" element={<Products />} />
-                <Route path="products/:category/:subcategory" element={<Products />} />
+                <Route path="category/:category" element={<Products />} />
+                <Route path="category/:category/:subcategory" element={<Products />} />
+                <Route path="product/:slug" element={<ProductDetails />} />
             </Routes>
             <Footer />
         </div>

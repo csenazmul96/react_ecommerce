@@ -1,62 +1,30 @@
-import { useRef, useState, useEffect, useContext } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {connect} from "react-redux";
 import {loginAction} from "../../Services/Actions/AuthAction";
+import {sendCustomerDetaisRequest} from "../../Services/Actions/CustomerAction";
 import {Link} from "react-router-dom";
-import AuthContext from "../../context/AuthProvider";
-import axios from '../../api/axios';
-const LOGIN_URL = '/login';
+import {error} from '../share/Error'
 
 
 
-const Login = ({loginAction, user})=>{
-    const { setAuth } = useContext(AuthContext);
+const Login = ({loginAction, error})=>{
     const userRef = useRef();
     const errRef = useRef();
 
     const [email, setUser] = useState('csenazmul96@gmail.com');
     const [password, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         userRef.current.focus();
     }, [])
-
     useEffect(() => {
         setErrMsg('');
     }, [email, password])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-
-            await axios.post(LOGIN_URL,
-                JSON.stringify({ email, password }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            ).then((response)=>{
-                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.token}`;
-                loginAction(response?.data?.data)
-                setUser('');
-                setPwd('');
-                setSuccess(true);
-            });
-
-
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else if (err.response?.status === 400) {
-                setErrMsg('Missing Username or Password');
-            } else if (err.response?.status === 401) {
-                setErrMsg('Unauthorized');
-            } else {
-                setErrMsg('Login Failed');
-            }
-            errRef.current.focus();
-        }
+        loginAction({ email, password })
     }
 
     return (
@@ -64,7 +32,6 @@ const Login = ({loginAction, user})=>{
             <div className="logo">
                 <Link to="/"><img src="../../images/logo.png" alt="" /></Link>
             </div>
-            <h1>{user ? user.name : null} </h1>
             <div className="login_content">
                 <div className="login_banner">
                     <img src="../../images/login_bg.png" alt="" className="img-fluid" />
@@ -96,14 +63,13 @@ const Login = ({loginAction, user})=>{
                                 onChange={(e) => setPwd(e.target.value)}
                                 value={password}
                             />
-                                <small><span> Field doesn't look like valid.</span></small>
                         </div>
                         <div className="d_flex_start mt_20 mb_20 login_btn_wrap">
                             <button type="submit" className="btn login_btn">LOGIN</button>
-                            <a href="#" className="ml_20 f_pass">Forget Password</a>
                         </div>
                     </form>
                     <h2>New Account Registration</h2>
+
                     <button type="submit" className="btn login_btn">Click Here To Register</button>
                 </div>
             </div>
@@ -113,4 +79,4 @@ const Login = ({loginAction, user})=>{
 const mapStateToProps = (state) =>({
     user: state.AuthReducer.user
 })
-export default connect(mapStateToProps, {loginAction}) (Login)
+export default connect(mapStateToProps, {loginAction, sendCustomerDetaisRequest, error}) (Login)

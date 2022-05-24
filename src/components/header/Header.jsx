@@ -4,9 +4,13 @@ import classes from './Header.module.css'
 import { Link } from "react-router-dom";
 import axios from '../../api/axios';
 
-const Header = () =>{
+import {sendCustomerDetaisRequest} from "../../Services/Actions/CustomerAction";
+import {connect} from "react-redux";
+
+const Header = ({customerDetails, sendCustomerDetaisRequest}) =>{
     const [categories, setData] = useState([])
     useEffect(()=>{
+        sendCustomerDetaisRequest()
         getCategory()
     }, [])
 
@@ -24,7 +28,7 @@ const Header = () =>{
             categories.map((product)=>{
                 return(
                     <li key={'key_'+product.id.toString()}>
-                        <Link to={`products/${product.slug}`}>{product.name}</Link>
+                        <Link to={`category/${product.slug}`}>{product.name}</Link>
                         { product.sub_categories.length ? (
                             <div className="megamenu">
                                 <ul>
@@ -41,7 +45,7 @@ const Header = () =>{
         return (
             subcat.map((product)=>{
                 return(
-                    <li key={'key_sub_'+product.id.toString()}><Link to={`products/${parent}/${product.slug}`}>{product.name}</Link></li>
+                    <li key={'key_sub_'+product.id.toString()}><Link to={`category/${parent}/${product.slug}`}>{product.name}</Link></li>
                 )
             })
 
@@ -63,7 +67,7 @@ const Header = () =>{
                                 <button className="btn btn-secondary dropdown-toggle" type="button"
                                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="false">
-                                    Hi , <b>Daniel</b>
+                                    Hi , <b>{customerDetails ? customerDetails.name : null}</b>
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a className="dropdown-item" href="#">My naked zebra</a>
@@ -146,4 +150,7 @@ const Header = () =>{
         </header>
     )
 }
-export default Header
+const mapStateToProps = (state)=>({
+    customerDetails: state.CustomerReducer.customer
+})
+export default connect(mapStateToProps, {sendCustomerDetaisRequest})(Header)
