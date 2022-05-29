@@ -4,7 +4,9 @@ import axios from "../api/axios";
 import Slider from "react-slick";
 import {connect} from "react-redux";
 import {sendCustomerDetaisRequest} from "../Services/Actions/CustomerAction";
-const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
+import {AddToCart} from "../Services/Actions/CartAction";
+
+const ProductDetails = ({customerDetails,cartMessage, sendCustomerDetaisRequest, AddToCart})=> {
     let [user, setUser] = useState(customerDetails)
     const settings = {
         slidesToShow: 1,
@@ -26,6 +28,48 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
         dots: false,
         focusOnSelect: false,
         infinite: false,
+    };
+    function SampleNextArrow(props) {
+        const { onClick } = props;
+        return (<button onClick={onClick} className='arrow_left slick-arrow'><i className='lni lni-chevron-left'></i ></button>);
+    }
+
+    function SamplePrevArrow(props) {
+        const {onClick } = props;
+        return (<button onClick={onClick} className='arrow_right slick-arrow'><i className='lni lni-chevron-right'></i></button>);
+    }
+    const mobile_slider_settings = {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        fade: false,
+        adaptiveHeight: true,
+        infinite: false,
+        useTransform: true,
+        nextArrow: <SampleNextArrow />,
+        prevArrow: <SamplePrevArrow />,
+        autoplay: true,
+        speed: 400,
+        cssEase: 'cubic-bezier(0.77, 0, 0.18, 1)',
+        responsive: [{
+            breakpoint: 1200,
+            settings: {
+                slidesToScroll: 1,
+                slidesToShow: 1
+            }
+        }, {
+            breakpoint: 1024,
+            settings: {
+                slidesToScroll: 2,
+                slidesToShow: 2,
+            }
+        }, {
+            breakpoint: 768,
+            settings: {
+                slidesToScroll: 1,
+                slidesToShow: 1
+            }
+        }]
     };
     let {slug} = useParams();
     let [productDetails, setProductData] = useState([])
@@ -120,6 +164,16 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
             })}
         </Slider>)
     }
+    const MobileSlider = ()=>{
+        return (<Slider {...mobile_slider_settings}>
+            {images.map((dd, index)=>{
+                return (<div key={'mob_slider_'+index} className="slide"><img src={dd.compressed_image} alt="" className="img-fluid width_full"/></div>)
+            })}
+        </Slider>)
+    }
+    function AddToCartItem(){
+        AddToCart(inventories, customerDetails.id)
+    }
     const Inventories = ()=>{
         if(inventories && inventories.length) {
             return (<>
@@ -196,14 +250,7 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
                             </div>
                             <div className="single_product_left_mobile">
                                 <div className="single_img_mobile">
-                                    <div className="slide"><img src="../images/productnew/product-1.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-2.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-3.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-4.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-1.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-2.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-3.webp" alt="" className="img-fluid width_full"/></div>
-                                    <div className="slide"><img src="../images/productnew/product-4.webp" alt="" className="img-fluid width_full"/></div>
+                                    <MobileSlider/>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +258,7 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
                     <div className="col-md-12 col-lg-5">
                         <div className="single_product_description ">
                             <h2>{productDetails ? productDetails.name : null}</h2>
-                            <p>Naked Zebra22</p>
+                            <p>{productDetails ? productDetails.style_no : null}</p>
                             <h3>${productDetails && productDetails.price ? productDetails.price.toFixed(2) : null }</h3>
                             <div className="pack_ratio">
                                 <div className="row">
@@ -232,7 +279,6 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
                                     </div>
                                 </div>
                                 <Inventories />
-
                             </div>
                             <div className="pack_ratio_total_wrap">
                                 <div className="row">
@@ -257,22 +303,13 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
                                 </div>
                             </div>
                             <div className="add_to_car_btn">
-                                <button className="btn_common width_180p"> Add to Cart</button>
+                                <div className="form-group has_error"> <small><span>{cartMessage}</span></small></div>
+                                <button className="btn_common width_180p" onClick={AddToCartItem}> Add to Cart</button>
                             </div>
                             <div className="product_desc">
                                 <h2>Description</h2>
-                                <ul>
-                                    <li>Style No. HB116608</li>
-                                    <li>Drop Shoulder, Shirred Drawstring on Front Hem</li>
-                                    <li>Size & Fit</li>
-                                    <li>Fit: This garment fits true to size.</li>
-                                    <li>Length: Waist Length.</li>
-                                    <li>Bust: Great for any cup size.</li>
-                                    <li>Waist: Not Fitted - comfortable room throughout midsection.</li>
-                                    <li>Fabric: Woven100% Polyester</li>
-                                    <li>Hand Wash Cold</li>
-                                    <li>Sizes in Pack: 2S - 2M - 2L</li>
-                                </ul>
+                                <ul>{productDetails.description}</ul>
+                                <ul className="ml_0 mt_10" dangerouslySetInnerHTML={{__html: productDetails.size_chart}}></ul>
                             </div>
                         </div>
                     </div>
@@ -283,6 +320,7 @@ const ProductDetails = ({customerDetails, sendCustomerDetaisRequest})=> {
 }
 
 const mapStateToProps = (state)=>({
-    customerDetails: state.CustomerReducer.customer
+    customerDetails: state.CustomerReducer.customer,
+    cartMessage: state.CartReducer.messages,
 })
-export default connect(mapStateToProps,{sendCustomerDetaisRequest})(ProductDetails)
+export default connect(mapStateToProps,{sendCustomerDetaisRequest, AddToCart})(ProductDetails)
