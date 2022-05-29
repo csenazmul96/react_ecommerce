@@ -6,6 +6,7 @@ import './css/custom.css'
 import './css/plugin/slick/slick.css'
 import './fonts/stylesheet.css'
 import './scss/main.scss';
+import './js/main.js';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";

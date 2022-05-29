@@ -3,8 +3,7 @@ import {Link} from "react-router-dom";
 
 export const Product = ({product}) =>{
     return (
-        <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding"
-             key={'key_' + product.id.toString()}>
+        <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding" key={'key_' + product.id.toString()}>
             <div className="product_wrapper">
                 <Link to={`/product/${product.slug}`}>
                     <div className="main_product_img">
@@ -18,16 +17,16 @@ export const Product = ({product}) =>{
                             className="line_through">${product.orig_price_formatted}</span></p>)}
 
                 </div>
-                <ul className="color_variation">
-                    <li className="active"><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                    <li><span></span></li>
-                </ul>
+                {/*<ul className="color_variation">*/}
+                {/*    <li className="active"><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*    <li><span></span></li>*/}
+                {/*</ul>*/}
             </div>
         </div>
     );

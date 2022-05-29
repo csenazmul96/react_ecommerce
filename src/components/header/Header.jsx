@@ -66,9 +66,7 @@ const Header = ({customerDetails,cartItems, sendCustomerDetaisRequest, GetCart})
                         </li>
                         <li>
                             <div className="dropdown">
-                                <button className="btn btn-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Hi , <b>{customerDetails ? customerDetails.name : null}</b>
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -145,6 +143,8 @@ const Header = ({customerDetails,cartItems, sendCustomerDetaisRequest, GetCart})
             <div className="header_search">
                 <div className="header_search_inner">
                     <form action="#">
+                        <input className="search-input " type="text" value="" placeholder="Search" />
+                            <input type="submit" value="Search" />
                     </form>
                 </div>
             </div>
