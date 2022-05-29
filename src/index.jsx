@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/bootstrap.css'
 import './css/plugin/font-awesome/fontawesome.css'
+import './css/custom.css'
 import './css/plugin/slick/slick.css'
 import './fonts/stylesheet.css'
 import './scss/main.scss';
