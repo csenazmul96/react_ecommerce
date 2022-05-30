@@ -42,7 +42,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
     function getSecondCategory(){
         axios.get('/categories/' + category+'/'+subcategory)
             .then((res) => {
-                setParentCategory(res.data.data)
+                setSecondCategory(res.data.data)
             })
     }
 
@@ -95,9 +95,9 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                     <div className="col-12 col-md-6">
                         <nav aria-label="breadcrumb ">
                             <ol className="breadcrumb nz_bredcrumb">
-                                <li className="breadcrumb-item"><a href="#">Women</a></li>
-                                <li className="breadcrumb-item"><a href="#">New Arrivals</a></li>
-                                <li className="breadcrumb-item active" aria-current="page">Feb 10</li>
+                                <li className="breadcrumb-item"><Link to="/"  className="breadcrumb-item">Home</Link></li>
+                                {parentCategory ? (<li className="breadcrumb-item"><Link to={`category/${parentCategory.slug}`}>{parentCategory.name}</Link></li>) : null}
+                                {secondCategory ? (<li className="breadcrumb-item active" aria-current="page">{secondCategory.name}</li>) : null}
                             </ol>
                         </nav>
                     </div>
