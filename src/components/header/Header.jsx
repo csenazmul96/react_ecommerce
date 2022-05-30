@@ -143,8 +143,8 @@ const Header = ({customerDetails,cartItems, sendCustomerDetaisRequest, GetCart})
             <div className="header_search">
                 <div className="header_search_inner">
                     <form action="#">
-                        <input className="search-input " type="text" value="" placeholder="Search" />
-                            <input type="submit" value="Search" />
+                        <input className="search-input " type="text"   placeholder="Search" />
+                            <input type="submit" name="Search" />
                     </form>
                 </div>
             </div>

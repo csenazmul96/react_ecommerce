@@ -1,14 +1,17 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import {Link, useParams} from "react-router-dom";
 import Pagination from "./Pagination";
+import axios from "../api/axios";
 
 import {sendProductsRequest} from "../Services/Actions/ProductActions";
 import Product from "./share/Product";
 const Products = ({user, sendProductsRequest, products, loader, error, pagination})=>{
     let {category, subcategory} = useParams();
+    const [parentCategory, setParentCategory] = useState(null);
+    const [secondCategory, setSecondCategory] = useState(null);
     let url = category;
     if(subcategory)
         url = url+'/'+subcategory
@@ -20,10 +23,27 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
 
     useEffect(()=>{
         getProduct()
+        getCategory()
+        if(subcategory){
+            getSecondCategory()
+        }
     }, [category, subcategory])
 
     function getProduct(){
         sendProductsRequest({url:url, params:query})
+    }
+
+    function getCategory(){
+        axios.get('/categories/' + category)
+            .then((res) => {
+                setParentCategory(res.data.data)
+            })
+    }
+    function getSecondCategory(){
+        axios.get('/categories/' + category+'/'+subcategory)
+            .then((res) => {
+                setParentCategory(res.data.data)
+            })
     }
 
     const handleCallback = (link) =>{
@@ -62,7 +82,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
             return (
                 products.map((product) => {
                     return (
-                        <Product product={product} />
+                        <Product product={product} key={'id_'+product.id} />
                     )
                 })
             )
@@ -176,9 +196,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="color_checkbox">
                                                     <input type="checkbox" id="color1" name="color" />
                                                     <label htmlFor="color1">
-                                                        <img
-                                                            src="../images/product/single-img-thumbnail3.jpg"
-                                                            alt="" className="img-fluid width_full height_full" />
+                                                        <img src="../images/product/single-img-thumbnail3.jpg" alt="" className="img-fluid width_full height_full" />
                                                         <span>Color 1</span>
                                                     </label>
                                                 </div>
@@ -187,9 +205,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="color_checkbox">
                                                     <input type="checkbox" id="color2" name="color" />
                                                     <label htmlFor="color2">
-                                                        <img
-                                                            src="../images/product/single-img-thumbnail2.jpg"
-                                                            alt="" className="img-fluid width_full height_full" />
+                                                        <img src="../images/product/single-img-thumbnail2.jpg" alt="" className="img-fluid width_full height_full" />
                                                         <span>Color 2</span>
                                                     </label>
                                                 </div>
@@ -198,9 +214,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="color_checkbox">
                                                     <input type="checkbox" id="color3" name="color" />
                                                     <label htmlFor="color3">
-                                                        <img
-                                                            src="../images/product/single-img-thumbnail5.jpg"
-                                                            alt="" className="img-fluid width_full height_full" />
+                                                        <img src="../images/product/single-img-thumbnail5.jpg" alt="" className="img-fluid width_full height_full" />
                                                         <span>Color 3</span>
                                                     </label>
                                                 </div>
@@ -209,9 +223,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="color_checkbox">
                                                     <input type="checkbox" id="color4" name="color" />
                                                     <label htmlFor="color4">
-                                                        <img
-                                                            src="../images/product/single-img-thumbnail4.jpg"
-                                                            alt="" className="img-fluid width_full height_full" />
+                                                        <img src="../images/product/single-img-thumbnail4.jpg" alt="" className="img-fluid width_full height_full" />
                                                         <span>Color 4</span>
                                                     </label>
                                                 </div>
@@ -220,9 +232,7 @@ const Products = ({user, sendProductsRequest, products, loader, error, paginatio
                                                 <div className="color_checkbox">
                                                     <input type="checkbox" id="color5" name="color" />
                                                     <label htmlFor="color5">
-                                                        <img
-                                                            src="../images/product/single-img-thumbnail5.jpg"
-                                                            alt="" className="img-fluid width_full height_full" />
+                                                        <img src="../images/product/single-img-thumbnail5.jpg" alt="" className="img-fluid width_full height_full" />
                                                         <span>Color 5</span>
                                                     </label>
                                                 </div>

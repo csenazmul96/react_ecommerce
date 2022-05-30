@@ -78,8 +78,7 @@ const Products = ({user})=>{
             return (
                 filter.map((product) => {
                     return (
-                        <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding"
-                             key={'key_' + product.id.toString()}>
+                        <div className="col-6 col-md-6 col-lg-4 col-xl-3 product_custom_padding" key={'show_product_' + product.id.toString()}>
                             <div className="product_wrapper">
                                 <a href="#">
                                     <div className="main_product_img">
