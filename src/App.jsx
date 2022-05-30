@@ -6,6 +6,7 @@ import Products from "./components/Products";
 import {Routes, Route, useLocation} from "react-router-dom";
 import Login from "./components/Auth/Login";
 import React, {useLayoutEffect} from "react";
+import Cart from "./components/Cart";
 function App() {
     useLayoutEffect(() => {
         window.addEventListener('resize', getHeaderHeight);
@@ -28,6 +29,7 @@ function App() {
                 <Route path="category/:category" element={<Products />} />
                 <Route path="category/:category/:subcategory" element={<Products />} />
                 <Route path="product/:slug" element={<ProductDetails />} />
+                <Route path="cart" element={<Cart />} />
             </Routes>
             <Footer />
         </div>
