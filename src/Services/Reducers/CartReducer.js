@@ -1,4 +1,4 @@
-import {GetCartItems, SetCartMessage} from "../Type";
+import {GetCartItems, SetCartMessage, DeleteCart} from "../Type";
 const initState = {
     cartItems: [],
     messages: null,
@@ -19,6 +19,14 @@ export default function (state = initState, action){
                 ...state,
                 cartItems: action.payload,
                 loader: false,
+            }
+        case DeleteCart:
+            let items = [...state.cartItems];
+            let idx = items.findIndex((i) => i.id === action.payload);
+            items.splice(idx, 1);
+            return {
+                ...state,
+                cartItems: items,
             }
         default:
             return initState

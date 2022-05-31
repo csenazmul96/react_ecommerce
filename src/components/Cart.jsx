@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {GetCart} from "../Services/Actions/CartAction";
-import {connect, useSelector} from "react-redux";
+import {DeleteCartItem} from "../Services/Actions/CartAction";
+import {connect} from "react-redux";
+import {Link} from "react-router-dom";
 
-const Cart = ({cartItems, GetCart})=>{
+const Cart = ({cartItems, DeleteCartItem})=>{
     const [items, setItems]= useState([])
-    let [totalPack, settotalPack] = useState(0)
-    let [totalQty, settotalQty] = useState(0)
     let [totalPrice, settotalPrice] = useState(0.00)
+
     useEffect(() => {
-        setItems(cartItems)
-        CalculateSummary()
+        if(cartItems && cartItems.length) {
+            setItems(cartItems)
+            CalculateSummary()
+        }
     }, [cartItems]);
 
     const changeQty = (i, type)=>{
@@ -50,13 +52,13 @@ const Cart = ({cartItems, GetCart})=>{
                     return (<tr key={'desktop_cart'+i}>
                         <td>
                             <div className="cart_product_inner">
-                                <a href="#">{ inv.item && inv.item.images && inv.item.images.length ? (<img src={inv.item.images[0].thumbs_image} alt="" className="img-fluid" width="70px" />) : null}</a>
+                                <Link to={`/product/${inv.item.slug}`}>{ inv.item && inv.item.images && inv.item.images.length ? (<img src={inv.item.images[0].thumbs_image} alt="" className="img-fluid" width="70px" />) : null}</Link>
                                 <div className="cart_product_text">
                                     {inv.item ? <h2>{inv.item.style_no}</h2> : null}
                                     {inv.item ? <p>{inv.item.name}</p> : null}
                                     {inv.item ? <h2>${inv.item.price.toFixed(2)}</h2> : null}
                                 </div>
-                                <span className="remove">Remove</span>
+                                <span className="remove" onClick={e=> DeleteCartItem(inv.id)}>Remove</span>
                             </div>
                         </td>
                         <td>
@@ -104,7 +106,7 @@ const Cart = ({cartItems, GetCart})=>{
                             </div>
                         </div>
                         <div className="right">
-                            <a href="#">{ inv.item && inv.item.images && inv.item.images.length ? (<img src={inv.item.images[0].thumbs_image} alt="" className="img-fluid" />) : null}</a>
+                            <Link to={`/product/${inv.item.slug}`}>{ inv.item && inv.item.images && inv.item.images.length ? (<img src={inv.item.images[0].thumbs_image} alt="" className="img-fluid" />) : null}</Link>
                         </div>
                     </div>)
                 })
@@ -162,8 +164,7 @@ const Cart = ({cartItems, GetCart})=>{
                                 <button className="btn_transparent">Continue Shipping</button>
                             </div>
                             <div className="cart_payment">
-                                <a href="#"> <img src="../images/payment.png" alt=""
-                                                  className="img-fluid" /></a>
+                                <a href="#"> <img src="../images/payment.png" alt="" className="img-fluid" /></a>
                             </div>
                         </div>
                     </div>
@@ -175,4 +176,4 @@ const Cart = ({cartItems, GetCart})=>{
 const mapStateToProps = (state)=>({
     cartItems: state.CartReducer.cartItems
 })
-export default connect(mapStateToProps, {GetCart}) (Cart)
+export default connect(mapStateToProps, {DeleteCartItem}) (Cart)

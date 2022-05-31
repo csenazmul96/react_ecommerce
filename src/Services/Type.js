@@ -7,4 +7,5 @@ export const GetCustomerDetails = 'get_customer_details'
 export const GetCartItems = 'get_cart_items'
 export const AddCartItem = 'add_cart_item'
 export const SetCartMessage = 'add_cart_error_message'
+export const DeleteCart = 'delete_cart'
 

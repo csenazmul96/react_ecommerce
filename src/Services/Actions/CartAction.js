@@ -1,4 +1,4 @@
-import { GetCartItems, GetProductRequestFail, SetCartMessage} from "../Type";
+import { GetCartItems, SetCartMessage, DeleteCart} from "../Type";
 import axios from "../../api/axios";
 
 export const AddToCart = (payload, customer) =>{
@@ -56,6 +56,22 @@ export const GetCart = () =>{
             dispatch({
                 type:SetCartMessage,
                 payload: error.message
+            })
+        }
+    }
+}
+export const DeleteCartItem = (payload) =>{
+    return async (dispatch)=>{
+        try {
+             // await axios.delete('/carts/'+payload)
+            dispatch({
+                type: DeleteCart,
+                payload: payload,
+            })
+        } catch (error){
+            dispatch({
+                type:SetCartMessage,
+                payload: 'Not Delete'
             })
         }
     }
