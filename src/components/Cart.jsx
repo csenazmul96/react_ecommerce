@@ -7,10 +7,12 @@ const Cart = ({cartItems, DeleteCartItem})=>{
     const [items, setItems]= useState([])
     let [totalPrice, settotalPrice] = useState(0.00)
 
+    if(items && items.length)
+        CalculateSummary()
+
     useEffect(() => {
         if(cartItems && cartItems.length) {
             setItems(cartItems)
-            CalculateSummary()
         }
     }, [cartItems]);
 
@@ -41,7 +43,7 @@ const Cart = ({cartItems, DeleteCartItem})=>{
                 let total = data.quantity * data.item.price * packSize
                 sum = sum + total
             })
-            settotalPrice(sum ? sum.toFixed(2) : 0.00)
+            totalPrice = sum ? sum.toFixed(2) : 0.00
         }
     }
 
