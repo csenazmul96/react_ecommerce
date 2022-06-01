@@ -56,10 +56,15 @@ const Home = ()=>{
             }
         ]
     };
+    const [sections1, setSections1] = useState(null)
+    const [sections2, setSections2] = useState(null)
+    const [sections3, setSections3] = useState(null)
+    const [sections4, setSections4] = useState(null)
     useEffect(()=>{
         getSlider();
         getNewInItems();
         getWidgets();
+        customSections();
     }, [])
     function getSlider(){
         axios.get('/sliders/desktop')
@@ -67,6 +72,18 @@ const Home = ()=>{
                 (result) => {
                     setSlider(result.data.data)
                 })
+    }
+    function customSections(){
+        axios.get('/custom-section', {params: {types: JSON.stringify([2,3,1,5])}})
+            .then((response) => {
+                let resData = response.data.data
+                resData.forEach(element => {
+                    if(element.type == 1 && element.content !='' ) setSections1(element)
+                    if(element.type == 2 && element.content !='' ) setSections2(element)
+                    if(element.type == 3 && element.content !='' ) setSections3(element)
+                    if(element.type == 5 && element.content !='' ) setSections4(element)
+                });
+            })
     }
     function getNewInItems(){
         axios.get('/home/selected/items')
@@ -139,6 +156,71 @@ const Home = ()=>{
             )
         }
     }
+    const Sections1 = ()=>{
+        if(sections1) {
+            return (
+                <section className="home_collection sections1 main_product_area mt-4">
+                    <div className="container custom_container">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="product_wrapper" dangerouslySetInnerHTML={{__html: sections1.content}}></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+    }
+    const Sections2 = ()=>{
+        if(sections2) {
+            return (
+                <section className="home_collection sections2 main_product_area mt-4">
+                    <div className="container custom_container">
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="main_title">
+                                    <h2><span>About Us</span></h2>
+                                </div>
+                            </div>
+                            <div className="col-lg-12">
+                                <div className="product_wrapper" dangerouslySetInnerHTML={{__html: sections2.content}}></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+    }
+    const Sections3 = ()=>{
+        if(sections3) {
+            return (
+                <section className="home_collection sections3 main_product_area mt-4">
+                    <div className="container custom_container">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="product_wrapper main_title" dangerouslySetInnerHTML={{__html: sections3.content}}></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+    }
+    const Sections4 = ()=>{
+        if(sections4) {
+            return (
+                <section className="home_collection main_product_area section4 mt-4">
+                    <div className="container custom_container">
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="product_wrapper" dangerouslySetInnerHTML={{__html: sections4.content}}></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+    }
     return(
         <>
             <div className="full_screen_overlay"></div>
@@ -161,20 +243,26 @@ const Home = ()=>{
                     </div>
                 </div>
             </section>
-            {widgets && widgets.length ? (<section className="home_collection main_product_area mt-4">
-                <div className="container custom_container">
-                    <div className="row">
-                        <div className="col-12">
-                            <div className="main_title">
-                                <h2><span>Inspired by</span> <a href="#"> Dani & Dani Wholesale Clothing</a></h2>
+            {widgets && widgets.length ? (
+                <section className="home_collection main_product_area mt-4">
+                    <div className="container custom_container">
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="main_title">
+                                    <h2><span>Inspired by</span> <a href="#"> Dani & Dani Wholesale Clothing</a></h2>
+                                </div>
                             </div>
+                            <Widgets />
                         </div>
-                        <Widgets />
                     </div>
-                </div>
-            </section>) : null }
+                </section>) : null }
+            {Sections1 ? (<Sections1 /> ) : null }
+            {Sections2 ? (<Sections2 /> ) : null }
+            {Sections3 ? (<Sections3 /> ) : null }
+            {Sections4 ? (<Sections4 /> ) : null }
 
-            <Instagram />
+
+            {/*<Instagram />*/}
         </>
     )
 }
