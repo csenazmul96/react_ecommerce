@@ -209,11 +209,11 @@ const Home = ()=>{
     const Sections4 = ()=>{
         if(sections4) {
             return (
-                <section className="home_collection main_product_area section4 mt-4">
+                <section className="home_collection main_product_area section4 mb-0 mt-4">
                     <div className="container custom_container">
                         <div className="row">
                             <div className="col-lg-12">
-                                <div className="product_wrapper" dangerouslySetInnerHTML={{__html: sections4.content}}></div>
+                                <div className="product_wrapper mb-0 pb-0" dangerouslySetInnerHTML={{__html: sections4.content}}></div>
                             </div>
                         </div>
                     </div>
