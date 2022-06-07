@@ -44,7 +44,7 @@ const CartModal = ({cartItems,DeleteCartItem})=>{
         return (
             items.map((inv,i)=>{
                 return(
-                    <div className="right_cart_menu_inner">
+                    <div className="right_cart_menu_inner" key={'modal_cart'+i}>
                         <div className="inner">
                             <div className="img">
                                 { inv.item && inv.item.images && inv.item.images.length ? (<img src={inv.item.images[0].thumbs_image} alt="" className="img-fluid" width="70px" />) : null}

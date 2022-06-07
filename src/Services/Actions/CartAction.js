@@ -63,7 +63,7 @@ export const GetCart = () =>{
 export const DeleteCartItem = (payload) =>{
     return async (dispatch)=>{
         try {
-             // await axios.delete('/carts/'+payload)
+             await axios.delete('/carts/'+payload)
             dispatch({
                 type: DeleteCart,
                 payload: payload,
